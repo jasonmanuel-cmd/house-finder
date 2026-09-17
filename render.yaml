@@ -1,0 +1,25 @@
+# Optional PAID deployment. Do not apply without approving hosting costs.
+# One process + one disk: dashboard-triggered scraping writes to the same DB.
+services:
+  - type: web
+    name: private-seller-dashboard
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: python serve.py
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.15
+      - key: HOST
+        value: 0.0.0.0
+      - key: DB_PATH
+        value: /var/data/leads.db
+      - key: DASHBOARD_TOKEN
+        generateValue: true
+      - key: SECRET_KEY
+        generateValue: true
+    disk:
+      name: private-leads
+      mountPath: /var/data
+      sizeGB: 1
