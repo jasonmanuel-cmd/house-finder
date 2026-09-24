@@ -103,10 +103,12 @@ ZILLOW_HEADERS = {
     "Referer": "https://www.zillow.com/",
 }
 
-# Craigslist RSS feeds to poll for FSBO / real-estate listings in Kern County metros.
-CRAIGSLIST_RSS = [
-    "https://Bakersfield.craigslist.org/search/reb/searchRSS",
-    "https://Bakersfield.craigslist.org/search/apo/searchRSS",
+# Craigslist search API (current public endpoint the site itself uses; RSS is dead).
+# searchPath=rea is real estate listings; srchType=T filters to by-owner posts.
+CRAIGSLIST_API = "https://sapi.craigslist.org/web/v8/postings/search/full"
+CRAIGSLIST_QUERIES = [
+    {"cat": "rea", "searchPath": "area/bakersfield", "srchType": "T"},  # by-owner real estate
+    {"cat": "rea", "searchPath": "area/bakersfield"},                    # all real estate
 ]
 
 # Zillow FSBO search pages to inspect as a manual research resource.

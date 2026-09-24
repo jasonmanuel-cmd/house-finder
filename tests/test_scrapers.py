@@ -1,12 +1,14 @@
 """Synthetic fixtures only: no test fixture represents a real property."""
+import json
 import unittest
 from unittest.mock import patch, Mock
 from scrapers import kern_tax, bakersfield_code, zillow_fsbo
 
 
-def response(text='', status=200):
+def response(text='', status=200, payload=None):
     r = Mock(status_code=status, text=text, content=text.encode(), headers={'Content-Type': 'text/html'})
     r.raise_for_status.side_effect = None if status == 200 else RuntimeError(f'HTTP {status}')
+    r.json.side_effect = (lambda: payload) if payload is not None else Mock(side_effect=ValueError('No JSON'))
     return r
 
 
@@ -40,9 +42,14 @@ class ZillowParsingTests(unittest.TestCase):
 
 
 class CraigslistTests(unittest.TestCase):
+    def _api_response(self, payload, status=200):
+        return response(json.dumps(payload), status, payload=payload)
+
     def test_html_block_is_not_empty_success(self):
         from scrapers import craigslist
-        with patch('requests.get', return_value=response('<html>blocked</html>', 403)), patch.object(craigslist, 'CRAIGSLIST_RSS', ['https://bakersfield.craigslist.org/search/reo?format=rss']), patch.object(craigslist, 'upsert_lead') as save, patch.object(craigslist.feedparser, 'parse', return_value=Mock(entries=[])):
+        with patch.object(craigslist, 'CRAIGSLIST_QUERIES', [{'cat': 'rea', 'searchPath': 'area/bakersfield'}]), \
+             patch.object(craigslist, 'upsert_lead') as save, \
+             patch('requests.Session.get', return_value=self._api_response('<html>blocked</html>', 403)):
             found, new, error = craigslist.scrape_craigslist()
             self.assertEqual((found, new), (0, 0))
             self.assertIn('403', error)
@@ -50,25 +57,36 @@ class CraigslistTests(unittest.TestCase):
 
     def test_html_200_is_reported_as_parse_failure(self):
         from scrapers import craigslist
-        with patch('requests.get', return_value=response('<html>Access denied</html>')), patch.object(craigslist, 'CRAIGSLIST_RSS', ['https://bakersfield.craigslist.org/search/reo']), patch.object(craigslist, 'upsert_lead') as save:
+        with patch.object(craigslist, 'CRAIGSLIST_QUERIES', [{'cat': 'rea', 'searchPath': 'area/bakersfield'}]), \
+             patch.object(craigslist, 'upsert_lead') as save, \
+             patch('requests.Session.get', return_value=response('<html>Access denied</html>')):
             found, new, errors = craigslist.scrape_craigslist()
             self.assertEqual((found, new), (0, 0))
-            self.assertIn('Invalid RSS', errors)
+            self.assertTrue(errors, 'non-JSON response must be reported as failure')
             save.assert_not_called()
 
     def test_valid_empty_feed_is_success(self):
         from scrapers import craigslist
-        xml = '<rss version="2.0"><channel><title>Synthetic empty fixture</title><link>https://bakersfield.craigslist.org</link><description>Test</description></channel></rss>'
-        with patch('requests.get', return_value=response(xml)), patch.object(craigslist, 'CRAIGSLIST_RSS', ['https://bakersfield.craigslist.org/search/reo']):
+        payload = {'apiVersion': '8', 'data': {'items': []}}
+        with patch.object(craigslist, 'CRAIGSLIST_QUERIES', [{'cat': 'rea', 'searchPath': 'area/bakersfield'}]), \
+             patch('requests.Session.get', return_value=self._api_response(payload)):
             self.assertEqual(craigslist.scrape_craigslist(), (0, 0, ''))
 
-    def test_synthetic_rss_duplicate_and_unknown_city(self):
+    def test_synthetic_api_duplicate_and_unknown_city(self):
         from scrapers import craigslist
-        xml = '''<rss version="2.0"><channel><title>Synthetic tests</title><link>https://bakersfield.craigslist.org</link><description>Fixture</description><item><title>$123,000 Synthetic parcel</title><link>https://bakersfield.craigslist.org/reo/d/synthetic/1234567890.html</link><guid>synthetic-id</guid><description>Synthetic fixture only</description></item></channel></rss>'''
-        with patch('requests.get', return_value=response(xml)), patch.object(craigslist, 'CRAIGSLIST_RSS', ['https://bakersfield.craigslist.org/search/reo?query=Tehachapi', 'https://bakersfield.craigslist.org/search/reo']), patch.object(craigslist, 'upsert_lead', return_value=True) as save:
+        item = [17977620, 3915393, 143, 123000, "1:1~35.7~-117.3", "0ak05O", -3,
+                [13, "6x2ktdRvB23XeLj9erGYTF"], [4, "3:00G0G_1TLVCpJwAoR_0ak05O"],
+                [6, "synthetic-parcel"], [10, "$123,000"], "Synthetic parcel",
+                [5, 2, 800]]
+        payload = {'data': {'items': [item, list(item)]}}  # duplicate row must dedupe
+        with patch.object(craigslist, 'CRAIGSLIST_QUERIES', [{'cat': 'rea', 'searchPath': 'area/bakersfield'}]), \
+             patch.object(craigslist, 'upsert_lead', return_value=True) as save, \
+             patch('requests.Session.get', return_value=self._api_response(payload)):
             self.assertEqual(craigslist.scrape_craigslist(), (1, 1, ''))
-            self.assertEqual(save.call_args.args[0]['city'], '')
-            self.assertEqual(save.call_args.args[0]['price'], 123000)
+            lead = save.call_args.args[0]
+            self.assertEqual(lead['city'], '')
+            self.assertEqual(lead['price'], 123000)
+            self.assertEqual(lead['link'], 'https://www.craigslist.org/view/d/synthetic-parcel/6x2ktdRvB23XeLj9erGYTF')
 
 
 class OrchestratorTests(unittest.TestCase):
