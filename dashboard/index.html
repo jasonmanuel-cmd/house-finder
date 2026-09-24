@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Harbison Standard — Private Leads</title>
+<style>
+:root{--navy:#031c2b;--navy2:#07293c;--gold:#edc66f;--gold-dim:#b78b43;--light:#f6f5ef;--border:#e3ddcf;--ink:#1a2b36;--red:#c0392b;--green:#2e7d32}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Open Sans',system-ui,sans-serif;background:var(--light);color:var(--ink);min-height:100vh}
+h1,h2,h3{font-family:'Libre Caslon Display',Georgia,serif;font-weight:400}
+header{background:var(--navy);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+header img{height:38px;width:auto}
+header .sub{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+header .right{margin-left:auto;display:flex;gap:10px;align-items:center;font-size:12px;color:#9fb3c0}
+.motto{font-style:italic;font-family:'Libre Caslon Text',Georgia,serif;color:#9fb3c0;font-size:12px}
+.wrap{max-width:1280px;margin:0 auto;padding:22px}
+/* login */
+#login{max-width:380px;margin:12vh auto;background:#fff;border:1px solid var(--border);padding:34px 30px;border-radius:4px}
+#login h1{font-size:24px;margin-bottom:6px}
+#login p{font-size:13px;color:#5a6b76;margin-bottom:18px}
+input[type=password],input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:2px;font-size:14px;margin-bottom:12px;font-family:inherit}
+.gold{background:var(--gold);color:#07131c;border:none;min-height:42px;min-width:176px;padding:11px 22px;border-radius:2px;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;box-shadow:inset 0 0 18px #ffeba65c;width:100%}
+.gold:hover{filter:brightness(1.06)}
+.err{color:var(--red);font-size:13px;margin-top:10px;min-height:18px}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:#fff;border:1px solid var(--border);border-radius:4px;padding:14px 16px}
+.stat b{display:block;font-size:28px;font-family:'Libre Caslon Display',serif;color:var(--navy)}
+.stat span{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#5a6b76}
+.stat.hot b{color:var(--red)}
+.stat.gold-stat b{color:var(--gold-dim)}
+/* toolbar */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center}
+.toolbar select,.toolbar input[type=text]{padding:9px 10px;border:1px solid var(--border);border-radius:2px;font-size:13px;background:#fff;font-family:inherit}
+.toolbar input[type=text]{min-width:220px;flex:1}
+.toolbar .count{font-size:12px;color:#5a6b76;margin-left:auto}
+/* table */
+.tblwrap{background:#fff;border:1px solid var(--border);border-radius:4px;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
+th{background:var(--navy);color:#fff;text-align:left;padding:10px 12px;font-size:11px;letter-spacing:1px;text-transform:uppercase;position:sticky;top:0;cursor:pointer;white-space:nowrap}
+th:hover{color:var(--gold)}
+td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:top}
+tr:hover td{background:#faf8f2}
+.score{display:inline-block;min-width:34px;text-align:center;padding:3px 7px;border-radius:2px;font-weight:700;font-size:12px}
+.s-hot{background:#fdecea;color:var(--red)}
+.s-warm{background:#fdf5e0;color:var(--gold-dim)}
+.s-cool{background:#eef3f6;color:#5a6b76}
+.s-zero{background:#f0f0f0;color:#999}
+.addr{font-weight:600;max-width:340px}
+.meta{font-size:11px;color:#7a8a94;margin-top:2px}
+.src{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:#eef3f6;color:#41586b;white-space:nowrap}
+.src.craigslist{background:#e8f4e8;color:#2e7d32}
+.src.newspaper_auction{background:#fdecea;color:#a93226}
+.src.kern_tax{background:#fdf5e0;color:#9c7b2d}
+.src.kern_code_cases{background:#f0e8f8;color:#6c4ba6}
+a{color:#1c5d99;text-decoration:none}
+a:hover{text-decoration:underline}
+.link-out{font-size:12px;white-space:nowrap}
+/* status select + buttons */
+select.status{padding:4px 6px;font-size:12px;border:1px solid var(--border);border-radius:2px;background:#fff}
+.foot{display:flex;gap:8px;margin-top:14px;justify-content:center}
+.foot button{padding:9px 18px;border:1px solid var(--border);background:#fff;border-radius:2px;font-size:12px;cursor:pointer;font-family:inherit}
+.foot button:disabled{opacity:.45;cursor:default}
+.empty{padding:40px;text-align:center;color:#7a8a94;font-size:14px}
+.loading{padding:60px;text-align:center;color:#7a8a94;font-size:14px}
+.badge{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:2px;background:var(--navy);color:var(--gold)}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://www.harbisonstandard.com/assets/optimized/logo-500.webp" alt="Harbison Standard" onerror="this.style.display='none'">
+  <div><div class="sub">Private Seller Leads</div><div class="motto">It's not what you do, it's how you do it.</div></div>
+  <div class="right"><span id="synced-at"></span><button class="gold" style="min-width:0;padding:8px 14px" onclick="logout()">Lock</button></div>
+</header>
+
+<div id="login">
+  <h1>Private Leads</h1>
+  <p>Harbison Standard lead system. Enter your access token.</p>
+  <input type="password" id="token" placeholder="Access token" autocomplete="off">
+  <button class="gold" onclick="doLogin()">Unlock dashboard</button>
+  <div class="err" id="login-err"></div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="wrap">
+    <div class="stats" id="stats"></div>
+    <div class="toolbar">
+      <select id="f-score"><option value="">All scores</option><option value="7">Hot 7+</option><option value="5">Warm 5+</option><option value="1">Scored 1+</option></select>
+      <select id="f-source"><option value="">All sources</option></select>
+      <select id="f-status"><option value="">All statuses</option><option>new</option><option>contacted</option><option>skipped</option><option>dead</option><option>won</option></select>
+      <input type="text" id="f-q" placeholder="Search address, owner, description…">
+      <span class="count" id="count"></span>
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr>
+          <th onclick="sortBy('deal_score')">Score</th>
+          <th onclick="sortBy('address')">Property</th>
+          <th onclick="sortBy('source')">Source</th>
+          <th onclick="sortBy('price')">Price</th>
+          <th>Owner</th>
+          <th onclick="sortBy('status')">Status</th>
+          <th>Link</th>
+        </tr></thead>
+        <tbody id="rows"><tr><td colspan="7" class="loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="foot">
+      <button id="prev" onclick="page(-1)">← Previous</button>
+      <button id="next" onclick="page(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const LS_KEY='hs_private_leads_token';
+let token=localStorage.getItem(LS_KEY)||'';
+let leads=[],total=0,offset=0,limit=200,sortKey='deal_score',sortDesc=true,filters={};
+let debounceT=null;
+
+function api(path,opts){return fetch(path,{...opts,headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json',...(opts?.headers||{})}})}
+
+async function doLogin(){
+  const t=document.getElementById('token').value.trim();
+  if(!t){document.getElementById('login-err').textContent='Enter a token.';return}
+  document.getElementById('login-err').textContent='';
+  try{
+    const r=await fetch('/api/leads?limit=1',{headers:{'Authorization':'Bearer '+t}});
+    if(r.status===401){document.getElementById('login-err').textContent='Invalid token.';return}
+    if(!r.ok){document.getElementById('login-err').textContent='API error '+r.status+' — is it configured?';return}
+    token=t;localStorage.setItem(LS_KEY,t);showApp();
+  }catch(e){document.getElementById('login-err').textContent='Network error.'}
+}
+function logout(){localStorage.removeItem(LS_KEY);location.reload()}
+
+function showApp(){document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';load()}
+
+async function load(){
+  const p=new URLSearchParams();
+  if(filters.min_score)p.set('min_score',filters.min_score);
+  if(filters.source)p.set('source',filters.source);
+  if(filters.status)p.set('status',filters.status);
+  if(filters.q)p.set('q',filters.q);
+  p.set('limit',limit);p.set('offset',offset);
+  const body=document.getElementById('rows');
+  body.innerHTML='<tr><td colspan="7" class="loading">Loading…</td></tr>';
+  try{
+    const r=await api('/api/leads?'+p);
+    if(r.status===401){logout();return}
+    const data=await r.json();
+    if(data.error)throw new Error(data.error);
+    leads=data.leads;total=data.total;
+    render();
+  }catch(e){body.innerHTML='<tr><td colspan="7" class="empty">'+e.message+'</td></tr>'}
+}
+
+function render(){
+  // stats
+  const hot=lead=>lead.deal_score>=7, warm=lead=>lead.deal_score>=5&&lead.deal_score<7;
+  const fresh=lead=>lead.status==='new';
+  const sources={};leads.forEach(l=>sources[l.source]=(sources[l.source]||0)+1);
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><b>${total.toLocaleString()}</b><span>Total leads</span></div>
+    <div class="stat hot"><b>${leads.filter(hot).length}</b><span>Hot on page (7+)</span></div>
+    <div class="stat gold-stat"><b>${leads.filter(warm).length}</b><span>Warm on page (5-6)</span></div>
+    <div class="stat"><b>${leads.filter(fresh).length}</b><span>New on page</span></div>
+    <div class="stat"><b>${Object.keys(sources).length}</b><span>Active sources</span></div>`;
+  // source filter options
+  const sel=document.getElementById('f-source');
+  const current=sel.value;
+  const opts=['<option value="">All sources</option>'].concat(Object.keys(sources).sort().map(s=>`<option${s===current?' selected':''}>${s}</option>`));
+  sel.innerHTML=opts.join('');
+  // rows
+  const body=document.getElementById('rows');
+  if(!leads.length){body.innerHTML='<tr><td colspan="7" class="empty">No leads match these filters.</td></tr>'}
+  else body.innerHTML=leads.map(l=>{
+    const cls=l.deal_score>=7?'s-hot':l.deal_score>=5?'s-warm':l.deal_score>0?'s-cool':'s-zero';
+    const price=l.price?('$'+l.price.toLocaleString()):l.price_text||'—';
+    const owner=l.owner_name||'<span style="color:#aaa">—</span>';
+    const link=l.link?`<a class="link-out" href="${l.link}" target="_blank" rel="noreferrer">Open ↗</a>`:'—';
+    const city=l.city?` · ${l.city}`:'';
+    return `<tr>
+      <td><span class="score ${cls}">${l.deal_score||0}</span></td>
+      <td><div class="addr">${esc(l.address)}</div><div class="meta">${esc(l.source_type)}${city}</div></td>
+      <td><span class="src ${l.source}">${esc(l.source)}</span></td>
+      <td>${esc(price)}</td>
+      <td>${owner}</td>
+      <td><select class="status" onchange="setStatus('${esc(l.id)}',this.value)">
+        ${['new','contacted','skipped','dead','won'].map(s=>`<option${l.status===s?' selected':''}>${s}</option>`).join('')}
+      </select></td>
+      <td>${link}</td>
+    </tr>`}).join('');
+  document.getElementById('count').textContent=`${offset+1}–${Math.min(offset+leads.length,total)} of ${total.toLocaleString()}`;
+  document.getElementById('prev').disabled=offset<=0;
+  document.getElementById('next').disabled=offset+limit>=total;
+  document.getElementById('synced-at').textContent='Page '+(offset/limit+1);
+}
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+function sortBy(key){if(sortKey===key)sortDesc=!sortDesc;else{sortKey=key;sortDesc=true}load()}
+function page(d){offset=Math.max(0,offset+d*limit);load()}
+async function setStatus(id,status){
+  try{const r=await api('/api/leads',{method:'PATCH',body:JSON.stringify({id,status})});
+    if(!r.ok)throw new Error((await r.json()).error||r.status);
+    const l=leads.find(x=>x.id===id);if(l)l.status=status;render();
+  }catch(e){alert('Save failed: '+e.message)}
+}
+
+['f-score','f-source','f-status'].forEach(id=>document.getElementById(id).addEventListener('change',e=>{
+  const map={'f-score':'min_score','f-source':'source','f-status':'status'};
+  filters[map[id]]=e.target.value;offset=0;load();
+}));
+document.getElementById('f-q').addEventListener('input',e=>{
+  clearTimeout(debounceT);debounceT=setTimeout(()=>{filters.q=e.target.value.trim();offset=0;load()},350);
+});
+document.getElementById('token').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+
+if(token){ // silent re-auth with stored token
+  fetch('/api/leads?limit=1',{headers:{'Authorization':'Bearer '+token}}).then(r=>{if(r.ok)showApp();else{localStorage.removeItem(LS_KEY);token=''}}).catch(()=>{});
+}
+</script>
+</body>
+</html>
