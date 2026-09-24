@@ -7,4 +7,6 @@ data/*.db
 .DS_Store
 node_modules/
 *.log
-artifacts/
+artifacts/*
+!artifacts/nonauction-probes/
+!artifacts/nonauction-probes/*.html
